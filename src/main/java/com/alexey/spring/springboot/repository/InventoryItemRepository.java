@@ -10,6 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, Long> {
 
 
-//    List<InventoryItem> findByMaterialName(String materialName);
 
 }
