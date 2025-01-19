@@ -5,7 +5,9 @@ import com.alexey.spring.springboot.repository.InventoryItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class InventoryService {
@@ -17,22 +19,48 @@ public class InventoryService {
         this.inventoryItemRepository = inventoryItemRepository;
     }
 
-    // Метод для получения всех записей
+
     public List<InventoryItem> getAllItems() {
         return inventoryItemRepository.findAll();
     }
 
-    // Метод для поиска по "Наименованию материала/актива"
-    public List<InventoryItem> getItemsByMaterialName(String materialName) {
-        return inventoryItemRepository.findByMaterialName(materialName);
+    public InventoryItem updateItem(Long id, Map<String, String> updates) {
+        return inventoryItemRepository.findById(id).map(item -> {
+            updates.forEach((fieldName, fieldValue) -> {
+                try {
+                    Field field = InventoryItem.class.getDeclaredField(fieldName);
+                    field.setAccessible(true);
+                    field.set(item, convertValue(field, fieldValue));
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    throw new RuntimeException("Failed to update field: " + fieldName, e);
+                }
+            });
+            return inventoryItemRepository.save(item);
+        }).orElseThrow(() -> new RuntimeException("Item not found with id " + id));
     }
 
-    // Метод для добавления нового элемента
+    // Метод для преобразования значения в нужный тип
+    private Object convertValue(Field field, String value) {
+        Class<?> fieldType = field.getType();
+        if (fieldType.equals(int.class) || fieldType.equals(Integer.class)) {
+            return Integer.parseInt(value);
+        } else if (fieldType.equals(double.class) || fieldType.equals(Double.class)) {
+            return Double.parseDouble(value);
+        } else if (fieldType.equals(float.class) || fieldType.equals(Float.class)) {
+            return Float.parseFloat(value);
+        } else if (fieldType.equals(long.class) || fieldType.equals(Long.class)) {
+            return Long.parseLong(value);
+        }
+        return value;
+    }
+
+
+
     public InventoryItem addItem(InventoryItem item) {
         return inventoryItemRepository.save(item);
     }
 
-    // Метод для удаления элемента по ID
+
     public void deleteItemById(Long id) {
         inventoryItemRepository.deleteById(id);
     }

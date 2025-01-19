@@ -40,15 +40,21 @@ public class InventoryController {
         }
     }
 
-//    // Добавить новый элемент
-    @PostMapping
+
+    @PostMapping("/add")
    public InventoryItem addItem(@RequestBody InventoryItem item) {
         return inventoryService.addItem(item);
    }
 
-   // Удалить элемент по ID
-    @DeleteMapping("/{id}")
-   public void deleteItemById(@PathVariable Long id) {
+
+    @PatchMapping("/{id}")
+    public InventoryItem UpdateItem(@PathVariable Long id, @RequestBody Map<String, String> updates) {
+        return inventoryService.updateItem(id, updates);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteItemById(@PathVariable Long id) {
         inventoryService.deleteItemById(id);
     }
+
 }

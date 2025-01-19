@@ -33,14 +33,14 @@ public class SearchService {
 
     private boolean matchesField(InventoryItem item, String fieldName, String value) {
         try {
-            // Получаем поле по имени
+
             Field field = InventoryItem.class.getDeclaredField(fieldName);
             field.setAccessible(true);
 
-            // Получаем значение поля
+
             Object fieldValue = field.get(item);
 
-            // Проверяем, содержит ли значение искомый текст
+
             return fieldValue != null && fieldValue.toString().toLowerCase().contains(value.toLowerCase());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             return false;
@@ -54,11 +54,11 @@ public class SearchService {
 
         filter = filter.toLowerCase();
 
-        // Получаем все поля класса InventoryItem
+
         for (Field field : InventoryItem.class.getDeclaredFields()) {
             field.setAccessible(true);
             try {
-                // Получаем значение текущего поля
+
                 Object value = field.get(item);
                 if (value != null && value.toString().toLowerCase().contains(filter)) {
                     return true;
