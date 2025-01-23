@@ -63,9 +63,8 @@ public class SearchService {
                 if (value != null && value.toString().toLowerCase().contains(filter)) {
                     return true;
                 }
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException _) {
 
-                continue;
             }
         }
 
