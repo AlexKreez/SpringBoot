@@ -1,6 +1,6 @@
 package com.alexey.spring.springboot.service;
 
-import com.alexey.spring.springboot.springApplication.InventoryItem;
+import com.alexey.spring.springboot.domain.entity.InventoryItem;
 import com.alexey.spring.springboot.repository.InventoryItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,11 +32,11 @@ public class InventoryService {
                     field.setAccessible(true);
                     field.set(item, convertValue(field, fieldValue));
                 } catch (NoSuchFieldException | IllegalAccessException e) {
-                    throw new RuntimeException("Failed to update field: " + fieldName, e);
+                    throw new RuntimeException("НЕ ОБНОВЛЕНО ПОЛЕ: " + fieldName, e);
                 }
             });
             return inventoryItemRepository.save(item);
-        }).orElseThrow(() -> new RuntimeException("Item not found with id " + id));
+        }).orElseThrow(() -> new RuntimeException("НЕ НАЙДЕНО ID" + id));
     }
 
     // Метод для преобразования значения в нужный тип

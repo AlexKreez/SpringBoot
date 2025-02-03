@@ -1,6 +1,6 @@
 package com.alexey.spring.springboot.service;
 
-import com.alexey.spring.springboot.springApplication.InventoryItem;
+import com.alexey.spring.springboot.domain.entity.InventoryItem;
 import com.alexey.spring.springboot.repository.InventoryItemRepository;
 import org.springframework.stereotype.Service;
 

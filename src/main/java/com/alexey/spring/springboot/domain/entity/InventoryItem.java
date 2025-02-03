@@ -1,4 +1,4 @@
-package com.alexey.spring.springboot.springApplication;
+package com.alexey.spring.springboot.domain.entity;
 
 
 import jakarta.persistence.*;

@@ -1,0 +1,337 @@
+databaseChangeLog:
+- changeSet:
+    id: 1738597940784-1
+    author: Алексей (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: organization_code
+            type: TEXT
+        - column:
+            name: organization_name
+            type: TEXT
+        - column:
+            name: sp_name
+            type: TEXT
+        - column:
+            name: sp_code
+            type: TEXT
+        - column:
+            name: mol_name
+            type: TEXT
+        - column:
+            name: active_assignment_mol
+            type: TEXT
+        - column:
+            name: item_number
+            type: TEXT
+        - column:
+            name: item_name
+            type: TEXT
+        - column:
+            name: serial_number
+            type: TEXT
+        - column:
+            name: inventory_number
+            type: TEXT
+        - column:
+            name: unit
+            type: TEXT
+        - column:
+            name: personnel_number
+            type: TEXT
+        - column:
+            name: mol_login
+            type: TEXT
+        - column:
+            name: balance_unit
+            type: TEXT
+        - column:
+            name: sp_be
+            type: TEXT
+        - column:
+            name: current_account
+            type: TEXT
+        - column:
+            name: quantity
+            type: TEXT
+        - column:
+            name: price
+            type: TEXT
+        - column:
+            name: cost_value
+            type: TEXT
+        - column:
+            name: address
+            type: TEXT
+        - column:
+            name: file_id
+            type: TEXT
+        - column:
+            name: batch
+            type: TEXT
+        - column:
+            name: inventory_name
+            type: TEXT
+        - column:
+            name: source_value
+            type: TEXT
+        - column:
+            name: source_system
+            type: TEXT
+        - column:
+            name: center
+            type: TEXT
+        - column:
+            name: code_sa
+            type: TEXT
+        - column:
+            name: start_cost
+            type: TEXT
+        - column:
+            name: last_cost
+            type: TEXT
+        - column:
+            name: total_cost
+            type: TEXT
+        - column:
+            name: start_date
+            type: TEXT
+        - column:
+            name: in_transit
+            type: TEXT
+        - column:
+            name: mol2_name
+            type: TEXT
+        - column:
+            name: mol2_active
+            type: TEXT
+        - column:
+            name: mol2_number
+            type: TEXT
+        - column:
+            name: mol2_login
+            type: TEXT
+        - column:
+            name: mol3_name
+            type: TEXT
+        - column:
+            name: mol3_active
+            type: TEXT
+        - column:
+            name: mol3_number
+            type: TEXT
+        - column:
+            name: mol3_login
+            type: TEXT
+        - column:
+            name: mol4_name
+            type: TEXT
+        - column:
+            name: mol4_active
+            type: TEXT
+        - column:
+            name: mol4_number
+            type: TEXT
+        - column:
+            name: mol4_login
+            type: TEXT
+        - column:
+            name: inventory_type
+            type: TEXT
+        - column:
+            name: author_name
+            type: TEXT
+        - column:
+            name: author_login
+            type: TEXT
+        - column:
+            name: file_name
+            type: TEXT
+        - column:
+            name: import_mistake
+            type: TEXT
+        - column:
+            name: inventorization_mistake
+            type: TEXT
+        - column:
+            name: rik_code
+            type: TEXT
+        - column:
+            name: rik_distribution_errors
+            type: TEXT
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: inv_table333_pkey
+            name: id
+            startWith: 11276
+            type: INTEGER
+        tableName: inv_table333
+- changeSet:
+    id: 1738597940784-2
+    author: Алексей (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: Код организации
+            type: TEXT
+        - column:
+            name: Название организации
+            type: TEXT
+        - column:
+            name: Название СП
+            type: TEXT
+        - column:
+            name: Код СП
+            type: TEXT
+        - column:
+            name: ФИО МОЛ
+            type: TEXT
+        - column:
+            name: Наличие активного назначения у МО
+            type: TEXT
+        - column:
+            name: Номенклатурный номер
+            type: TEXT
+        - column:
+            name: Наименование материала/актива
+            type: TEXT
+        - column:
+            name: Серийный номер
+            type: TEXT
+        - column:
+            name: Инвентарный номер
+            type: TEXT
+        - column:
+            name: ед.изм.
+            type: TEXT
+        - column:
+            name: Табельный номер
+            type: TEXT
+        - column:
+            name: Логин МОЛ/ЛОС
+            type: TEXT
+        - column:
+            name: Балансовая единица МПЗ
+            type: TEXT
+        - column:
+            name: БЕ СП
+            type: TEXT
+        - column:
+            name: Текущий счёт на складе
+            type: TEXT
+        - column:
+            name: Количество
+            type: TEXT
+        - column:
+            name: Цена
+            type: TEXT
+        - column:
+            name: Стоимость
+            type: TEXT
+        - column:
+            name: Адрес
+            type: TEXT
+        - column:
+            name: ID файла
+            type: TEXT
+        - column:
+            name: Наименование инвентаризации
+            type: TEXT
+        - column:
+            name: Партия
+            type: TEXT
+        - column:
+            name: Источник загрузки
+            type: TEXT
+        - column:
+            name: Система-источник
+            type: TEXT
+        - column:
+            name: ЦО
+            type: TEXT
+        - column:
+            name: Код СА
+            type: TEXT
+        - column:
+            name: Первоначальная стоимость
+            type: TEXT
+        - column:
+            name: Остаточная стоимость
+            type: TEXT
+        - column:
+            name: Счёт стоимости
+            type: TEXT
+        - column:
+            name: Дата начала эксплуатации
+            type: TEXT
+        - column:
+            name: В пути
+            type: TEXT
+        - column:
+            name: МОЛ2 ФИО
+            type: TEXT
+        - column:
+            name: МОЛ2 Наличие активного назначения
+            type: TEXT
+        - column:
+            name: МОЛ2 Табельный номер
+            type: TEXT
+        - column:
+            name: МОЛ2 Логин
+            type: TEXT
+        - column:
+            name: МОЛ3 ФИО
+            type: TEXT
+        - column:
+            name: МОЛ3 Наличие активного назначения
+            type: TEXT
+        - column:
+            name: МОЛ3 Табельный номер
+            type: TEXT
+        - column:
+            name: МОЛ3 Логин
+            type: TEXT
+        - column:
+            name: МОЛ4 ФИО
+            type: TEXT
+        - column:
+            name: МОЛ4 Наличие активного назначения
+            type: TEXT
+        - column:
+            name: МОЛ4 Табельный номер
+            type: TEXT
+        - column:
+            name: МОЛ4 Логин
+            type: TEXT
+        - column:
+            name: Вид инвентаризации
+            type: TEXT
+        - column:
+            name: ФИО автора файла
+            type: TEXT
+        - column:
+            name: Логин автора файла
+            type: TEXT
+        - column:
+            name: Имя файла
+            type: TEXT
+        - column:
+            name: Наличие ошибок импорта
+            type: TEXT
+        - column:
+            name: Наличие ошибок распределения по в
+            type: TEXT
+        - column:
+            name: Код РИК
+            type: TEXT
+        - column:
+            name: Наличие ошибок распределения по Р
+            type: TEXT
+        tableName: invtable
+

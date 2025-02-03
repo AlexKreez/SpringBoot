@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: SpringBoot
+  profiles:
+    active: dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: "123"
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yml
+    enabled: true
+
+#debug: true
+
+#myapp:
+#  allowed-origins:
+#    - http://localhost:3000
+#    - http://example.com
