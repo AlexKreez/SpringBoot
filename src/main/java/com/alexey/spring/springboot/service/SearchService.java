@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-
 @Service
 public class SearchService {
 
@@ -38,54 +37,55 @@ public class SearchService {
 
         filter = filter.trim();
         System.out.println("Parsing filter: " + filter);
-        List<String> parts = splitExpression(filter);
+        List<Boolean> isOrList = new ArrayList<>();
+        List<String> parts = splitExpression(filter, isOrList);
         System.out.println("After splitExpression: " + parts);
-        List<Specification<InventoryItem>> andConditions = new ArrayList<>();
+        System.out.println("isOrList values: " + isOrList);
+        List<Specification<InventoryItem>> conditions = new ArrayList<>();
 
-        for (String part : parts) {
-            part = removeOuterBrackets(part);
+        if (parts.size() == 1 && !parts.get(0).contains("||") && !parts.get(0).contains("&")) {
+            return createSpecification(parts.get(0));
+        }
+
+        for (int i = 0; i < parts.size(); i++) {
+            String part = removeOuterBrackets(parts.get(i));
             System.out.println("Processing part after removing brackets: " + part);
-            if (part.contains("||")) {
-                List<String> orParts = List.of(part.split("\\|\\|"));
-                System.out.println("Splitting OR conditions: " + orParts);
-                Specification<InventoryItem> orSpec = Specification.where(null);
-                for (String orPart : orParts) {
-                    Specification<InventoryItem> parsedSpec = parseFilter(orPart.trim());
-                    orSpec = (orSpec == null) ? parsedSpec : orSpec.or(parsedSpec);
+
+            if (!part.contains("||") && !part.contains("&") && part.contains("=")) {
+                Specification<InventoryItem> spec = createSpecification(part);
+                if (spec != null) {
+                    conditions.add(spec);
                 }
-                andConditions.add(orSpec);
-            } else if (part.contains("&")) {
-                List<String> andParts = List.of(part.split("&"));
-                System.out.println("Splitting AND conditions: " + andParts);
-                Specification<InventoryItem> andSpec = Specification.where(null);
-                for (String andPart : andParts) {
-                    Specification<InventoryItem> parsedSpec = parseFilter(andPart.trim());
-                    andSpec = (andSpec == null) ? parsedSpec : andSpec.and(parsedSpec);
-                }
-                andConditions.add(andSpec);
             } else {
-                Specification<InventoryItem> spec = createSpecification(part.trim());
-                System.out.println("Creating Specification for condition: " + part);
-                andConditions.add(spec);
+                Specification<InventoryItem> spec = parseFilter(part);
+                if (spec != null) {
+                    conditions.add(spec);
+                }
             }
         }
 
-        Specification<InventoryItem> spec = Specification.where(null);
-        for (Specification<InventoryItem> andSpec : andConditions) {
-            spec = (spec == null) ? andSpec : spec.and(andSpec);
+        Specification<InventoryItem> spec = conditions.get(0);
+        for (int i = 1; i < conditions.size(); i++) {
+            if (isOrList.get(i - 1)) {
+                System.out.println("Applying OR between: " + conditions.get(i - 1) + " and " + conditions.get(i));
+                spec = spec.or(conditions.get(i));
+            } else {
+                System.out.println("Applying AND between: " + conditions.get(i - 1) + " and " + conditions.get(i));
+                spec = spec.and(conditions.get(i));
+            }
         }
 
         return spec;
     }
 
     private String removeOuterBrackets(String expression) {
-        if (expression.startsWith("(") && expression.endsWith(")")) {
-            return expression.substring(1, expression.length() - 1);
+        while (expression.startsWith("(") && expression.endsWith(")")) {
+            expression = expression.substring(1, expression.length() - 1);
         }
         return expression;
     }
 
-    private List<String> splitExpression(String expression) {
+    private List<String> splitExpression(String expression, List<Boolean> isOrList) {
         List<String> parts = new ArrayList<>();
         Stack<Character> stack = new Stack<>();
         StringBuilder currentPart = new StringBuilder();
@@ -98,14 +98,17 @@ public class SearchService {
                 stack.push(ch);
                 insideBrackets = true;
             } else if (ch == ')') {
-                stack.pop();
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
                 insideBrackets = !stack.isEmpty();
             }
-
 
             if ((ch == '&' || (ch == '|' && i + 1 < expression.length() && expression.charAt(i + 1) == '|'))
                     && stack.isEmpty() && !insideBrackets) {
                 parts.add(currentPart.toString().trim());
+                isOrList.add(ch == '|');
+                System.out.println("Split at position " + i + " with operator " + (ch == '|' ? "||" : "&"));
                 currentPart.setLength(0);
                 if (ch == '|') i++;
             } else {
@@ -141,9 +144,7 @@ public class SearchService {
                         criteriaBuilder.lower(root.get(fieldName)),
                         criteriaBuilder.lower(criteriaBuilder.literal("%" + value + "%"))
                 );
-
     }
-
 
     public List<InventoryItem> searchByWord(Map<String, String> filters) {
         String keyword = filters.keySet().stream().findFirst().orElse("").toLowerCase();
@@ -161,102 +162,3 @@ public class SearchService {
         return repository.findAll(spec);
     }
 }
-//package com.alexey.spring.springboot.service;
-//
-//import com.alexey.spring.springboot.domain.entity.InventoryItem;
-//import com.alexey.spring.springboot.repository.InventoryItemRepository;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.data.jpa.domain.Specification;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.Map;
-//
-//@Service
-//public class SearchService {
-//
-//    private static final Logger log = LoggerFactory.getLogger(SearchService.class);
-//    private final InventoryItemRepository repository;
-//
-//    public SearchService(InventoryItemRepository repository) {
-//        this.repository = repository;
-//    }
-//
-//    public List<InventoryItem> searchByFilter(String filter) {
-//        log.info("Received filter: {}", filter);
-//        Specification<InventoryItem> spec = parseFilter(filter);
-//
-//        log.debug("Final Specification: {}", spec);
-//        return repository.findAll(spec);
-//    }
-//
-//    private Specification<InventoryItem> parseFilter(String filter) {
-//        System.out.println(filter);
-//        if (filter == null || filter.trim().isEmpty()) {
-//            return Specification.where(null);
-//        }
-//
-//        filter = filter.replaceAll("[()]", "").trim();
-//        System.out.println("BEZ SKOBOK:       " + filter);// Убираем скобки
-//        if (!filter.contains("||") && !filter.contains("&")) {
-//            System.out.println("SMTH WRONG?????");
-//            return createSpecification(filter);
-//        }
-//
-//        // Разбираем условия с "||" и "&"
-//        Specification<InventoryItem> spec = Specification.where(null);
-//        String[] orConditions = filter.split("\\|\\|");
-//        System.out.println("SPLITED WITH ||     " + Arrays.toString(orConditions));
-//        for (String orCondition : orConditions) {
-//            System.out.println(orCondition + " awdawdaaaaaaaaaaaaaaaaaaa");
-//            Specification<InventoryItem> orSpec = Specification.where(null);
-//            String[] andConditions = orCondition.split("&");
-//            System.out.println("ANDCONDITION:    " + Arrays.toString(andConditions));
-//            for (String condition : andConditions) {
-//                Specification<InventoryItem> fieldSpec = createSpecification(condition);
-//                orSpec = (orSpec == null) ? fieldSpec : orSpec.and(fieldSpec);
-//            }
-//            spec = (spec == null) ? orSpec : spec.or(orSpec);
-//        }
-//        System.out.println(spec);
-//        return spec;
-//    }
-//
-//    private Specification<InventoryItem> createSpecification(String condition) {
-//        System.out.println("CONDITION: " + condition);
-//        if (!condition.contains("=")) {
-//            log.warn("Invalid condition: {}", condition);
-//            return null;
-//        }
-//
-//        String[] parts = condition.split("=");
-//        if (parts.length != 2) {
-//            log.warn("Skipping invalid filter condition: {}", condition);
-//            return null;
-//        }
-//
-//        String fieldName = parts[0].trim();
-//        String value = parts[1].trim().toLowerCase();
-//        System.out.println();
-//        return (root, query, criteriaBuilder) ->
-//                criteriaBuilder.like(criteriaBuilder.lower(root.get(fieldName)), "%" + value + "%");
-//    }
-//
-//    public List<InventoryItem> searchByWord(Map<String, String> filters) {
-//        String keyword = filters.keySet().stream().findFirst().orElse("").toLowerCase();
-//
-//        Specification<InventoryItem> spec = (root, query, criteriaBuilder) -> {
-//            String likeKeyword = "%" + keyword + "%";
-//
-//            return root.getModel().getDeclaredSingularAttributes().stream()
-//                    .filter(attr -> attr.getJavaType() == String.class)
-//                    .map(attr -> criteriaBuilder.like(criteriaBuilder.lower(root.get(attr.getName())), likeKeyword))
-//                    .reduce(criteriaBuilder::or)
-//                    .orElse(null);
-//        };
-//
-//        return repository.findAll(spec);
-//    }
-//}
