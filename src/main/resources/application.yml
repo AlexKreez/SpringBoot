@@ -17,12 +17,24 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
-
+    show-sql: true  # Вывод SQL-запросов в консоль
+    properties:
+      hibernate:
+        format_sql: true  # Форматирование SQL для лучшей читаемости
+        use_sql_comments: true  # Показывать комментарии в запросах
+        session_factory.statement_inspector: com.alexey.spring.springboot.config.SQLInterceptor  # Перехват SQL
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
     enabled: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG   # Показывает SQL-запросы
+    org.hibernate.orm.jdbc.bind: TRACE  # Показывает значения параметров SQL
+    com.alexey.spring.springboot.service: DEBUG # Логи сервиса поиска
 
 #debug: true
 
